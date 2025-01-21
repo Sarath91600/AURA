@@ -46,6 +46,7 @@ app.use('/admin', adminRoutes);
 app.use('/', loadHome);
 
 // Start server
-app.listen(3003, () => {
-    console.log('Server running on port 3003');
+const PORT = 3003;
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
 });
