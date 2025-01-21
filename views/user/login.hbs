@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AURA PERFUMES - Sign In</title>
+  
+</head>
+<body class="bg-white flex justify-center items-center min-h-screen">
+
+  <div class="w-full max-w-4xl mx-auto bg-white shadow-lg rounded-lg flex overflow-hidden">
+    <!-- Image Section -->
+    <div class="hidden md:flex w-1/2 bg-cover bg-center items-center justify-center p-8" style="background-image: url('https://images.unsplash.com/photo-1521747116042-b2e0e0e4f1da');">
+      <img src="/images/UNISEX.png" alt="Aura Perfumes" class="w-3/4 rounded-lg shadow-xl">
+    </div>
+
+    <!-- Form Section -->
+    <div class="w-full md:w-1/2 p-8 md:p-16">
+      <h1 class="text-3xl font-extrabold text-center text-gray-800">AURA PERFUMES</h1>
+      <div>
+  {{#if message}}
+    <p class="text-red-500">{{message}}</p>
+  {{/if}}
+</div>
+      <h2 class="text-lg text-center text-gray-600 mt-2">Don't have an account? <a href="/user/register" class="text-blue-600 hover:underline">Sign Up</a></h2>
+      
+      <form id="signup-form" class="mt-6 space-y-4" action="/user/login" method="POST">
+        <div>
+          <input type="email" name="email" id="email" placeholder="Email address" 
+            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-400 focus:outline-none shadow-sm transition duration-200 ease-in-out">
+        </div>
+        <div>
+          <input type="password" name="password" id="password" placeholder="Password" 
+            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-400 focus:outline-none shadow-sm transition duration-200 ease-in-out">
+        </div>
+        
+        <div>
+          <button type="submit"
+            class="w-full bg-black text-white font-semibold rounded-lg px-4 py-2 hover:bg-gray-800 focus:ring-2 focus:ring-indigo-400 transition duration-200 ease-in-out">
+            Login
+          </button>
+        </div>
+      </form>
+      
+      <!-- Google Login Button -->
+      <div class="mt-4">
+        <button type="submit"
+          class="w-full bg-blue-600 text-white font-semibold rounded-lg px-4 py-2 hover:bg-blue-700 focus:ring-2 focus:ring-indigo-400 transition duration-200 ease-in-out flex items-center justify-center">
+          <img src="/images/pngwing.com.png" alt="Google Icon" class="h-6 w-6 mr-2">
+          Continue with Google
+        </button>
+      </div>
+
+      <!-- Forgot Password Link -->
+      <p class="text-center text-gray-500 mt-4">
+        <a href="#" class="text-blue-600 hover:underline">Forgot Password?</a>
+      </p>
+
+      <!-- Terms and Privacy Policy -->
+      <p class="text-center text-sm text-gray-500 mt-6">
+        I agree with <a href="#" class="text-blue-600 hover:underline">Privacy Policy</a> and
+        <a href="#" class="text-blue-600 hover:underline">Terms of Use</a>
+      </p>
+    </div>
+  </div>
+<script src="https://cdn.tailwindcss.com"></script>
+</body>
+</html>

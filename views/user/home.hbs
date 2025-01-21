@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AURA Perfumes - Discover your signature scent with our collection of luxurious perfumes, athar oils, and diffusers.">
+  <meta name="keywords" content="perfumes, luxury, fragrance, gents, ladies, unisex, diffuser, AURA Perfumes">
+  <meta name="author" content="AURA Perfumes">
+  <title>AURA PERFUMES | Discover Your Signature Scent</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Fix the navbar at the top */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+    }
+
+    /* Add padding to prevent content overlapping navbar */
+    body {
+      padding-top: 4rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="bg-[#FDBA74] text-black shadow-md">
+    <div class="container mx-auto px-4 flex justify-between items-center h-16">
+      <!-- Logo -->
+      <a href="#" class="text-xl font-bold">AURA PERFUMES</a>
+
+      <!-- Hamburger Menu (Mobile) -->
+      <button id="menu-btn" class="block md:hidden focus:outline-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+
+      <!-- Menu Links -->
+      <div id="menu" class="hidden md:flex space-x-6">
+        <a href="#" class="hover:text-gray-700">Home</a>
+        <a href="#" class="hover:text-gray-700">About</a>
+        <a href="#" class="hover:text-gray-700">Contact</a>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="hidden md:flex items-center">
+        <input 
+          type="text" 
+          placeholder="Search..." 
+          class="px-4 py-2 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+        >
+      </div>
+
+      <!-- Icons Section -->
+      <div class="flex space-x-4 items-center">
+        <div class="relative">
+          <!-- Profile Icon Button -->
+          <a href="#" id="profile-button" class="hover:opacity-80">
+            <img src="/images/person_13924070.png" alt="person" class="h-6 w-6 cursor-pointer">
+          </a>
+
+          <!-- Dropdown Menu -->
+          <div 
+            id="profile-dropdown" 
+            class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg hidden"
+          >
+            <a href="/user/login" class="block px-4 py-2 text-black hover:bg-gray-100">Sign In</a>
+            <a href="#" class="block px-4 py-2 text-black hover:bg-gray-100">View Profile</a>
+          </div>
+        </div>
+        <a href="#" class="hover:opacity-80">
+          <img src="/images/cart_17658761.png" alt="Cart" class="h-8 w-8">
+        </a>
+        <a href="#" class="hover:opacity-80">
+          <img src="/images/heart.png" alt="wishlist" class="h-8 w-8 rounded-full">
+        </a>
+      </div>
+    </div>
+
+    <!-- Mobile Dropdown Menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-[#FDBA74]">
+        <a href="#" class="block px-4 py-2 hover:bg-gray-200">Home</a>
+      <a href="#" class="block px-4 py-2 hover:bg-gray-200">About</a>
+      <a href="#" class="block px-4 py-2 hover:bg-gray-200">Contact</a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <div class="w-full">
+    <img src="/images/home image 1.jpg" alt="Descriptive Text" class="w-full h-auto">
+  </div>
+
+  <!-- Body Text -->
+  <div class="bg-black bg-opacity-70 text-[#D4AF37] py-1">
+    <div class="container mx-auto px-4">
+      <h1 class="text-3xl font-bold text-center">AURA PERFUMES <br>Discover your Signature Scent</h1>
+      <p class="mt-4 text-lg text-center">
+        Discover the finest collection of perfumes that suit your unique style. Experience luxury, elegance, and timeless fragrances with us.
+      </p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-black text-white py-8">
+    <div class="container mx-auto text-center">
+      <h4 class="text-xl font-bold mb-4">AURA PERFUMES</h4>
+      <p class="text-sm mb-4">
+        "AURA: More than just fragrance, it's an experience. Indulge in our luxurious collection of perfumes, athar oils, and diffusers, each designed to elevate your mood and awaken your senses. Find your signature scent and let it radiate your aura."
+      </p>
+      <div class="space-y-2">
+        <p><strong>Customer Service:</strong> <a href="#" class="underline hover:text-gray-400">FAQs</a> | <a href="#" class="underline hover:text-gray-400">Shipping & Returns</a></p>
+        <p><strong>Contact Us:</strong> <a href="#" class="underline hover:text-gray-400">Email</a> | <a href="#" class="underline hover:text-gray-400">Phone</a></p>
+        <p>&copy; 2024 AURA. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile Menu Toggle
+    const menuBtn = document.getElementById('menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    menuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    const profileButton = document.getElementById('profile-button');
+    const profileDropdown = document.getElementById('profile-dropdown');
+
+    // Toggle dropdown visibility on button click
+    profileButton.addEventListener('click', (event) => {
+      event.preventDefault(); // Prevent default link action
+      profileDropdown.classList.toggle('hidden');
+    });
+
+    // Optional: Close the dropdown when clicking outside
+    window.addEventListener('click', (event) => {
+      if (!profileDropdown.contains(event.target) && !profileButton.contains(event.target)) {
+        profileDropdown.classList.add('hidden');
+      }
+    });
+  </script>
+</body>
+</html>
