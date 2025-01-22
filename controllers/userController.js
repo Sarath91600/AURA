@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 const User = require('../models/userModel');
+const Category = require('../models/category');
 
 // Register a new user
 const registerUser = async (req, res) => {
@@ -10,7 +11,7 @@ const registerUser = async (req, res) => {
         // Check if user already exists
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-            return res.render('user/register', { error: 'Email already exists.' });
+            return res.render('user/register', { message: 'Email already exists.' });
         }
 
         // Hash the password
@@ -142,6 +143,8 @@ const login = async (req, res) => {
 
         const { email, password } = req.body;
 
+       
+
         if (!email || !password) {
             return res.render('user/login', { message: 'All fields are required' });
         }
@@ -152,6 +155,11 @@ const login = async (req, res) => {
 
         if (!user) {
             return res.render('user/login', { message: 'No user found' });
+        }
+
+        // Check if the user's status is active
+        if (user.status !== 'Active') {
+            return res.render('user/login', { message: 'Sorry our account is blocked. Please contact admin.aura@gamil.com' });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
@@ -188,4 +196,36 @@ const getLoginPage = (req, res) => {
     res.render('user/login');
 };
 
-module.exports = { registerUser, getOtpPage, verifyOtp, loadHome, login, getLoginPage, resendOtp };
+const getCategoriesForUser = async (req, res) => {
+    try {
+      // Fetch categories that are not marked as deleted
+      const categories = await Category.find({ deleted: false });
+      console.log(categories)
+  
+      // Render the home page with the categories
+      res.render('user/home', { categories });
+      
+    } catch (error) {
+      console.error('Error fetching categories for user:', error);
+      res.status(500).send('Server error');
+    }
+  };
+
+
+  const logout = (req, res) => {
+    
+    res.redirect("user/login");
+};
+  
+
+//to distroy session and redirect to login page
+//exports.logout = (req, res) => {
+//     req.session.destroy((err) => {
+//       if (err) {
+//         console.error("Error destroying session:", err);
+//         return res.status(500).send("Something went wrong.");
+//       }
+//       res.redirect("/user/login");
+//     });
+//   };
+module.exports = { registerUser, getOtpPage, verifyOtp, loadHome, login, getLoginPage, resendOtp,getCategoriesForUser,logout };

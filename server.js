@@ -4,11 +4,13 @@ const mongoose = require('mongoose');
 const path = require('path');
 const hbs = require('hbs');
 const session = require('express-session');
+const nocache=require("nocache")
+app.use(nocache())
 
 // Routes
 const userRoutes = require('./routes/user');
 const adminRoutes = require('./routes/admin');
-const {loadHome} = require('./controllers/userController');
+
 
 // MongoDB connection
 mongoose.connect('mongodb://localhost:27017/aura', {
@@ -22,13 +24,20 @@ mongoose.connect('mongodb://localhost:27017/aura', {
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+
+app.use('/uploads', express.static('uploads'));
+
+
+
 // Session middleware
 app.use(session({
-  secret: 'your-secret-key',
-  resave: false,
-  saveUninitialized: true,
-  cookie: { secure: false } // Set to true if using HTTPS
-}));
+    secret:"mysecretkey",
+    resave:false,
+    saveUninitialized:true,
+    cookie:{
+    maxAge:100*60*60*24
+    }
+}))
 
 // Register custom 'eq' helper
 hbs.registerHelper('eq', function (a, b) {
@@ -43,7 +52,7 @@ app.use(express.static('public'));
 // Use routes
 app.use('/user', userRoutes);
 app.use('/admin', adminRoutes);
-app.use('/', loadHome);
+//app.use('/', loadHome);
 
 // Start server
 const PORT = 3003;

@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AURA PERFUMES - Sign In</title>
-  
 </head>
 <body class="bg-white flex justify-center items-center min-h-screen">
 
@@ -18,10 +17,10 @@
     <div class="w-full md:w-1/2 p-8 md:p-16">
       <h1 class="text-3xl font-extrabold text-center text-gray-800">AURA PERFUMES</h1>
       <div>
-  {{#if message}}
-    <p class="text-red-500">{{message}}</p>
-  {{/if}}
-</div>
+        {{#if message}}
+        <p id="error-message" class="text-red-500">{{message}}</p>
+        {{/if}}
+      </div>
       <h2 class="text-lg text-center text-gray-600 mt-2">Don't have an account? <a href="/user/register" class="text-blue-600 hover:underline">Sign Up</a></h2>
       
       <form id="signup-form" class="mt-6 space-y-4" action="/user/login" method="POST">
@@ -63,6 +62,30 @@
       </p>
     </div>
   </div>
-<script src="https://cdn.tailwindcss.com"></script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    // Ensure the DOM is fully loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      const emailInput = document.getElementById('email');
+      const passwordInput = document.getElementById('password');
+      const errorMessage = document.getElementById('error-message');
+      
+      // Hide error message when user starts typing in the input fields
+      emailInput.addEventListener('input', function() {
+        if (errorMessage) {
+          errorMessage.style.display = 'none';
+        }
+      });
+
+      passwordInput.addEventListener('input', function() {
+        if (errorMessage) {
+          errorMessage.style.display = 'none';
+        }
+      });
+    });
+  </script>
+
 </body>
 </html>

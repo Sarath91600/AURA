@@ -1,6 +1,8 @@
 const adminModel = require("../models/adminModel");
 const bcrypt = require("bcrypt");
 const userModel = require("../models/userModel");
+const Category = require('../models/category');
+const upload = require('../middleware/upload');  // Import the multer upload middleware
 
 const loadLogin = async (req, res) => {
   res.render("admin/login");
@@ -76,15 +78,20 @@ const unblockUser = async (req, res) => {
 // Load the admin dashboard with all users
 const loadDashboard = async (req, res) => {
   try {
+    // Check if the user is logged in (i.e., session exists)
     const admin = req.session.admin;
+    
     if (!admin) {
+      // If not logged in, redirect to login page
       return res.redirect("/admin/login");
     }
 
+    // Fetch the users data to display on the dashboard
     const users = await userModel.find({});
     res.render("admin/dashboard", { users });
+    
   } catch (error) {
-    console.error("Error loading dashboard:", error);
+    
     res.render("admin/dashboard", { message: "An error occurred while loading the dashboard." });
   }
 };
@@ -92,10 +99,188 @@ const loadDashboard = async (req, res) => {
 const logout = async (req, res) => {
   try{
     req.session.admin=null
-    res.redirect("/admin/login")
+    console.log(req.session.admin)
+    if(req.session.admin == null){
+      res.redirect("/admin/login")
+    }
+    else{
+      res.redirect("/admin/dashboard")
+    }
   }catch(err){
     console.log(err)
   }
 }
 
-module.exports = { loadLogin, login, loadDashboard, blockUser, unblockUser, logout };
+
+
+// Add category
+exports.addCategory = async (req, res) => {
+  try {
+    const { name } = req.body;
+    const image = req.file.path;  // Assuming you use multer for file upload
+
+    const newCategory = new Category({ name, image });
+    await newCategory.save();
+
+    res.redirect('/admin/categories');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Server error');
+  }
+};
+
+
+
+// Add Category function
+const addCategory = async (req, res) => {
+  try {
+    const { name } = req.body;  // Extract the category name from the request body
+    const image = req.file ? req.file.filename : '';  // Get the uploaded file's name
+
+    // Create a new category document
+    const newCategory = new Category({
+      name,
+      image,
+    });
+
+    // Save the new category
+    await newCategory.save();
+
+    // Redirect back to the category management page with a success message
+    res.redirect('/admin/categories');
+  } catch (error) {
+    console.error('Error adding category:', error);
+    res.status(500).send('Server error');
+  }
+};
+
+// Soft delete category
+exports.deleteCategory = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await Category.findByIdAndUpdate(id, { deleted: true });
+    res.redirect('/admin/categories');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Server error');
+  }
+};
+
+// GET method to render the Edit Category page
+const getEditCategoryPage = async (req, res) => {
+  try {
+    const { id } = req.params; // Get the category ID from the URL
+     console.log(req.params);
+     
+    // Find the category by its ID
+    const category = await Category.findById(id);
+
+    if (category) {
+      console.log(category);
+      
+      res.render('admin/editCategory', { category }); // Render the edit category page
+    } else {
+      res.status(404).send('Category not found'); // Error if not found
+    }
+  } catch (error) {
+    console.error('Error fetching category for editing:', error);
+    res.status(500).send('Server error');
+  }
+};
+
+// Function to Edit a Category
+const editCategory = async (req, res) => {
+  try {
+    const { id } = req.params; // Get category ID from the URL
+    const { name } = req.body; // Updated name from form
+
+    // Find the category by ID
+    const category = await Category.findById(id);
+
+    if (category) {
+      // Update the name
+      category.name = name;
+
+      // If a new image is uploaded, update it
+      if (req.file) {
+        category.image = req.file.filename;
+      }
+
+      // Save changes
+      await category.save();
+      res.redirect('/admin/categories'); // Redirect to categories page
+    } else {
+      res.status(404).send('Category not found'); // Error if not found
+    }
+  } catch (error) {
+    console.error('Error editing category:', error);
+    res.status(500).send('Server error');
+  }
+};
+
+// Fetch all categories (for home page)
+exports.getCategories = async (req, res) => {
+  try {
+    // Fetch only categories that are not marked as deleted
+    const categories = await Category.find({ deleted: false });
+
+    // Render the home page with categories
+    res.render('home', { categories });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Server error');
+  }
+};
+
+
+
+// Delete (soft delete) Category function
+const deleteCategory = async (req, res) => {
+  try {
+    const { id } = req.params;  // Get category ID from the URL parameter
+
+    const category = await Category.findById(id);  // Find the category by ID
+    if (category) {
+      category.deleted = true;  // Set the deleted flag to true (soft delete)
+      await category.save();  // Save the updated category
+      res.redirect('/admin/categories');  // Redirect to category management page after deletion
+    } else {
+      res.status(404).send('Category not found');
+    }
+  } catch (error) {
+    console.error('Error deleting category:', error);
+    res.status(500).send('Server error');
+  }
+};
+
+// Fetch Categories for the Admin (for home page or category listing)
+const getCategories = async (req, res) => {
+  try {
+    const categories = await Category.find({ deleted: false });  // Fetch non-deleted categories
+
+    res.render('admin/categories', { categories });  // Render the category page with the categories
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+    res.status(500).send('Server error');
+  }
+};
+
+
+
+
+
+
+module.exports = {
+  loadLogin,
+  login,
+  loadDashboard,
+  blockUser,
+  unblockUser,
+  logout,
+  addCategory,
+  editCategory,
+  getEditCategoryPage,
+  deleteCategory,
+  getCategories,
+};
+
