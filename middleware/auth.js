@@ -21,4 +21,4 @@ const isLogin = (req, res, next) => {
     }
     next(); // Allow the request to proceed to the next middleware if not logged in
 };
-module.exports = { isLogin };
+module.exports = { isLogin,checkSesssion };

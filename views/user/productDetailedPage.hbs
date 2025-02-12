@@ -1,0 +1,300 @@
+<title>AURA PERFUMES | Discover Your Signature Scent</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Fix the navbar at the top */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+    }
+
+    /* Add padding to prevent content overlapping navbar */
+    body {
+      padding-top: 4rem;
+    }
+
+    /* Category Grid Styling */
+    .categories {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 2rem;
+    }
+
+    .category {
+      background-color: white;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .category:hover {
+      transform: translateY(-10px);
+    }
+
+    .category img {
+      width: 100%;
+      height: 150px;  /* Adjusted size */
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .category h3 {
+      margin-top: 1rem;
+      font-size: 1.25rem;
+      font-weight: bold;
+    }
+
+    /* Image Zoom on Hover */
+    .image-zoom {
+      transition: transform 0.3s ease;
+      cursor: zoom-in;
+    }
+
+    .image-zoom:hover {
+      transform: scale(1.2);
+    }
+
+    /* Adjusting the product detail layout */
+    .product-detail {
+      margin-top: 4rem;
+    }
+
+    .product-image img {
+      max-width: 100%;
+      height: auto;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .product-info {
+      padding-left: 2rem;
+    }
+
+    .related-products img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+      border-radius: 8px;
+    }.related-products {
+        margin-top: 8rem; /* Add space above the related products */
+     
+
+    }footer {
+  margin-top: 10rem; /* Add space above the footer to avoid overlap */
+     }
+
+    /* Additional Image Thumbnails */
+    .product-thumbnails img {
+      width: 75px;
+      height: 75px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-right: 1rem;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .product-thumbnails img:hover {
+      transform: scale(1.1);
+    }
+  </style>
+
+<body>
+   <!-- Navbar -->
+  <nav class="bg-[#FDBA74] text-black shadow-md">
+    <div class="container mx-auto px-4 flex justify-between items-center h-16">
+      <!-- Logo -->
+      <a href="#" class="text-xl font-bold">AURA PERFUMES</a>
+
+      <!-- Hamburger Menu (Mobile) -->
+      <button id="menu-btn" class="block md:hidden focus:outline-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+
+      <!-- Menu Links -->
+      <div id="menu" class="hidden md:flex space-x-6">
+        <a href="/user/home" class="hover:text-gray-700">Home</a>
+        <a href="#" class="hover:text-gray-700">About</a>
+        <a href="#" class="hover:text-gray-700">Contact</a>
+        <a href="/user/logout" class="hover:text-gray-700">Logout</a>
+      </div>
+
+      <!-- Icons Section -->
+      <div class="flex space-x-4 items-center">
+        <div class="relative">
+          <!-- Profile Icon Button -->
+          <a href="#" id="profile-button" class="hover:opacity-80">
+            <img src="/images/person_13924070.png" alt="person" class="h-6 w-6 cursor-pointer">
+          </a>
+
+          <!-- Dropdown Menu -->
+          <div 
+            id="profile-dropdown" 
+            class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg hidden"
+          >
+            <a href="/user/login" class="block px-4 py-2 text-black hover:bg-gray-100">Sign In</a>
+            <a href="#" class="block px-4 py-2 text-black hover:bg-gray-100">View Profile</a>
+          </div>
+        </div>
+        <a href="#" class="hover:opacity-80">
+          <img src="/images/cart_17658761.png" alt="Cart" class="h-8 w-8">
+        </a>
+        <a href="#" class="hover:opacity-80">
+          <img src="/images/heart.png" alt="wishlist" class="h-8 w-8 rounded-full">
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Breadcrumbs (Moved Below Navbar) -->
+<nav class="breadcrumb mb-6 pt-16 px-4">
+  <a href="/user/home" class="text-blue-500 hover:underline">Home</a> /
+  <a href="/category/{{product.category.name}}" class="text-blue-500 hover:underline">{{product.category.name}}</a> /
+  <span class="text-gray-500">{{product.name}}</span>
+</nav>
+
+<!-- Product Detail Section -->
+<section class="product-detail px-4 lg:px-24 py-10">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+    <!-- Product Image and Information -->
+    <div class="product-image">
+      <img src="{{product.mainImage}}" alt="{{product.name}}" class="image-zoom w-72 h-72 object-cover rounded-lg shadow-lg mb-6" />
+      <!-- Additional Product Images -->
+      <div class="product-thumbnails flex space-x-4 mt-4">
+        <img src="{{product.firstImage}}" alt="First Image" onclick="document.querySelector('.product-image img').src='{{product.firstImage}}'" class="w-20 h-20 object-cover rounded-lg cursor-pointer shadow-md hover:scale-105 transition-transform duration-200" />
+        <img src="{{product.secondImage}}" alt="Second Image" onclick="document.querySelector('.product-image img').src='{{product.secondImage}}'" class="w-20 h-20 object-cover rounded-lg cursor-pointer shadow-md hover:scale-105 transition-transform duration-200" />
+        <img src="{{product.thirdImage}}" alt="Third Image" onclick="document.querySelector('.product-image img').src='{{product.thirdImage}}'" class="w-20 h-20 object-cover rounded-lg cursor-pointer shadow-md hover:scale-105 transition-transform duration-200" />
+      </div>
+    </div>
+
+    <!-- Product Information -->
+    <div class="product-info">
+      <h1 class="text-3xl font-semibold text-gray-800 mb-4">{{product.name}}</h1>
+      <p class="text-gray-500 mb-6">{{product.description}}</p>
+
+      <!-- Price and Discount Section -->
+      <div class="price-section mb-6">
+        <p class="text-xl font-semibold text-gray-700">
+          Original Price: 
+          <span class="line-through text-gray-400">₹{{product.price}}</span>
+        </p>
+        <p class="text-2xl text-green-500 font-semibold">
+          Offer Price: ₹{{calculateOfferPrice product.price product.discount}}
+        </p>
+      </div>
+
+      <!-- Stock Availability -->
+      <div class="stock-status mb-6">
+  {{#ifEquals product.stock 0}}
+    <p class="text-red-500">Sorry, out of stock</p>
+  {{else if product.isSoldOut}}
+    <p class="text-red-500">Sold Out</p>
+  {{else if product.isUnavailable}}
+    <p class="text-red-500">Unavailable</p>
+ 
+   
+  {{/ifEquals}}
+</div>
+      <!-- Product Highlights or Specifications -->
+      <div class="product-specs mb-6">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">Highlights/Specifications</h3>
+        <ul class="list-disc pl-6 text-gray-600">
+          {{#each product.highlights}}
+            <li>{{this}}</li>
+          {{/each}}
+        </ul>
+      </div>
+
+      <!-- Add to Cart Button -->
+      <button class="bg-blue-500 text-white py-3 px-6 rounded-lg mt-6 hover:bg-blue-600 transition duration-200 ease-in-out transform hover:scale-105">
+        Add to Cart
+      </button>
+    </div>
+  </div>
+</section>
+
+{{!-- Related Product Section --}}
+<section class="related-products mt-10 px-4 lg:px-24">
+  <h2 class="text-2xl font-semibold text-gray-800 mb-6">Related Products</h2>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    {{#each relatedProducts}}
+      <div class="border p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 w-48 h-auto flex flex-col">
+        <!-- Wrapper to center content -->
+        <div class="flex flex-col h-full justify-between">
+          <!-- Smaller Image Size -->
+          <a href="/product/{{this._id}}"><img src="{{this.mainImage}}" alt="{{this.name}}" class="w-32 h-32 object-cover rounded-lg mb-4 transition-transform duration-200 hover:scale-105" /></a>
+              
+            
+          
+          
+          <!-- Text content and button -->
+          <div class="flex flex-col items-center">
+            <h3 class="text-lg font-semibold text-gray-800 mb-2 text-center">{{this.name}}</h3>
+            <p class="text-sm text-gray-500 mb-2 text-center">
+              Price: 
+              <span class="line-through text-gray-400">₹{{this.price}}</span>
+            </p>
+            <p class="text-lg text-green-500 font-semibold text-center">
+              Offer Price: ₹{{calculateOfferPrice this.price this.discount}}
+            </p>
+            <a href="/product/{{this._id}}" class="inline-block bg-blue-500 text-white py-2 px-4 rounded-lg mt-4 hover:bg-blue-600 transition duration-200">
+              View Details
+            </a>
+          </div>
+        </div>
+      </div>
+    {{/each}}
+  </div>
+</section>
+
+
+
+
+
+
+  <!-- Footer -->
+  <footer class="bg-black text-white py-8">
+    <div class="container mx-auto text-center">
+      <h4 class="text-xl font-bold mb-4">AURA PERFUMES</h4>
+      <p class="text-sm mb-4">
+        "AURA: More than just fragrance, it's an experience. Indulge in our luxurious collection of perfumes, athar oils, and diffusers, each designed to elevate your mood and awaken your senses. Find your signature scent and let it radiate your aura."
+      </p>
+      <div class="space-y-2">
+        <p><strong>Customer Service:</strong> <a href="#" class="underline hover:text-gray-400">FAQs</a> | <a href="#" class="underline hover:text-gray-400">Shipping & Returns</a></p>
+        <p><strong>Contact Us:</strong> <a href="#" class="underline hover:text-gray-400">Email</a> | <a href="#" class="underline hover:text-gray-400">Phone</a></p>
+        <p>&copy; 2024 AURA. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile Menu Toggle
+    const menuBtn = document.getElementById('menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    menuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    const profileButton = document.getElementById('profile-button');
+    const profileDropdown = document.getElementById('profile-dropdown');
+
+    // Toggle dropdown visibility on button click
+    profileButton.addEventListener('click', (event) => {
+      event.preventDefault(); // Prevent default link action
+      profileDropdown.classList.toggle('hidden');
+    });
+
+    // Optional: Close the dropdown when clicking outside
+    window.addEventListener('click', (event) => {
+      if (!profileButton.contains(event.target) && !profileDropdown.contains(event.target)) {
+        profileDropdown.classList.add('hidden');
+      }
+    });
+  </script>
+</body> 

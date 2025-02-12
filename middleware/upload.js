@@ -1,17 +1,40 @@
-const multer = require('multer');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
+const multer = require("multer");
 
-// Configure multer storage
+// Define the upload directory
+const uploadPath = path.join(__dirname, "../public/uploads");
+
+// Configure storage
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'public/uploads/');  // Save images in the 'uploads' folder under public directory
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));  // Create a unique filename
-  },
+    destination: function (req, file, cb) {
+        if (!fs.existsSync(uploadPath)) {
+            fs.mkdirSync(uploadPath, { recursive: true }); // Ensure the upload directory exists
+        }
+        cb(null, uploadPath);
+    },
+    filename: function (req, file, cb) {
+        const uniqueName = `${Date.now()}-${file.originalname}`; // Unique filename
+        cb(null, uniqueName);
+    }
 });
 
-// Create multer upload instance
-const upload = multer({ storage });
+// File filter to validate file types
+const fileFilter = (req, file, cb) => {
+    const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
+    if (allowedTypes.includes(file.mimetype)) {
+        cb(null, true);
+    } else {
+        cb(new Error("Invalid file type. Only JPG, PNG, and JPEG are allowed."), false);
+    }
+};
 
-module.exports = upload;
+// Multer configuration for single image upload
+const uploadSingle = multer({
+    storage,
+    fileFilter,
+    limits: { fileSize: 5 * 1024 * 1024 } // Limit file size to 5MB
+}).single("image"); // Accept a single file with the name 'image'
+
+// Export the upload middleware
+module.exports = { uploadSingle };

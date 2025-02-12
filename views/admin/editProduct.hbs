@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Product</title>
+      <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+</head>
+<body class="bg-gray-100">
+
+    <div class="flex">
+        <!-- Main Content -->
+        <div class="w-full lg:w-4/5 p-8">
+            <!-- Title -->
+            <h2 class="text-2xl font-semibold mb-6 text-gray-800">Edit Product</h2>
+
+            <form action="/admin/product/edit/{{product._id}}" method="POST" enctype="multipart/form-data">
+            <div class="mb-4">
+    <label for="name" class="block text-gray-700 font-semibold mb-2">Product Name</label>
+    <input type="text" id="name" name="name" value="{{product.name}}" required class="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+</div>
+
+<!-- Category -->
+<div class="mb-4">
+    <label for="category" class="block text-gray-700 font-semibold mb-2">Select Category</label>
+    <select id="category" name="category" required class="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        <option value="">--Select Category--</option>
+        {{#each categories}}
+        <option value="{{this._id}}" {{#if (eq this._id product.category._id)}}selected{{/if}}>{{this.name}}</option>
+        {{/each}}
+    </select>
+</div>
+
+               
+                <div class="container mx-auto py-8">
+                <div class="space-y-4">
+                    <!-- Main Image Upload and Cropper -->
+                    <div>
+                        <input type="file" id="mainImage" name="mainImage" accept="image/*" class="hidden"required>
+                         <input type="hidden" name="mainImageData" id="mainImageData"required>
+                        <label for="mainImage" class="cursor-pointer bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">Upload Main Image</label>
+                        <div id="mainImagePreview" class="mt-4 w-1/4 h-auto"></div>
+                        <div id="mainImageCropper" class="mt-4 hidden"></div>
+                        <button id="mainImageCropButton" class="mt-4 hidden bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600">Crop Image</button>
+                    </div>
+
+                    <!-- First Image Upload and Cropper -->
+                    <div>
+                        <input type="file" id="firstImage" name="firstImage" accept="image/*" class="hidden"required>
+                        <input type="hidden" name="firstImageData" id="firstImageData"required>
+                        <label for="firstImage" class="cursor-pointer bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">Upload First Image</label>
+                        <div id="firstImagePreview" class="mt-4 w-1/4 h-auto"></div>
+                        <div id="firstImageCropper" class="mt-4 hidden"></div>
+                        <button id="firstImageCropButton" class="mt-4 hidden bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600">Crop Image</button>
+                    </div>
+
+                    <!-- Second Image Upload and Cropper -->
+                    <div>
+                        <input type="file" id="secondImage" name="secondImage" accept="image/*" class="hidden"required>
+                        <input type="hidden" name="secondImageData" id="secondImageData"required>
+                        <label for="secondImage" class="cursor-pointer bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">Upload Second Image</label>
+                        <div id="secondImagePreview" class="mt-4 w-1/4 h-auto"></div>
+                        <div id="secondImageCropper" class="mt-4 hidden"></div>
+                        <button id="secondImageCropButton" class="mt-4 hidden bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600">Crop Image</button>
+                    </div>
+
+                    <!-- Third Image Upload and Cropper -->
+                    <div>
+                        <input type="file" id="thirdImage" name="thirdImage" accept="image/*" class="hidden"required>
+                         <input type="hidden" name="thirdImageData" id="thirdImageData">
+                        <label for="thirdImage" class="cursor-pointer bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">Upload Third Image</label>
+                        <div id="thirdImagePreview" class="mt-4 w-1/4 h-auto"></div>
+                        <div id="thirdImageCropper" class="mt-4 hidden"></div>
+                        <button id="thirdImageCropButton" class="mt-4 hidden bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600">Crop Image</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Product Details -->
+            <div class="mt-6">
+                <label for="price" class="block text-sm font-medium text-gray-700">Price</label>
+                <input type="number" id="price" name="price"  value="{{product.price}}" class="mt-1 block w-full p-2 border border-gray-300 rounded" required>
+
+                <label for="discount" class="block text-sm font-medium text-gray-700">Discount</label>
+                  <input type="number" id="discount" name="discount" value="{{product.discount}}" class="mt-1 block w-full p-2 border border-gray-300 rounded" required min="0" max="100">
+
+
+                <label for="stock" class="block text-sm font-medium text-gray-700 mt-4">Stock</label>
+                <input type="number" id="stock" name="stock"value="{{product.stock}}" class="mt-1 block w-full p-2 border border-gray-300 rounded" required>
+
+                <label for="description" class="block text-sm font-medium text-gray-700 mt-4">Description</label>
+                <textarea id="description" name="description" value="{{product.description}}" class="mt-1 block w-full p-2 border border-gray-300 rounded" required></textarea>
+
+                <label for="highlights" class="block text-sm font-medium text-gray-700 mt-4">Highlights</label>
+                <textarea id="highlights" name="highlights" value="{{product.highlights}}" class="mt-1 block w-full p-2 border border-gray-300 rounded" required></textarea>
+            </div>
+            
+
+
+                <!-- Submit Button -->
+                <button type="submit" class="bg-blue-500 text-white py-2 px-6 rounded-lg hover:bg-blue-700 transition">Update Product</button>
+            </form>
+            
+            <!-- View Product Button -->
+            <div class="mt-4">
+                <a href="/admin/product/{{product._id}}" class="bg-green-500 text-white py-2 px-6 rounded-lg hover:bg-green-700 transition">View Product</a>
+            </div>
+        </div>
+    </div>
+    <script>
+// Function to handle image upload and cropper initialization for each image
+function handleImageUpload(inputElement, previewContainer, cropperContainer, cropButtonId, imageField) {
+    const input = document.getElementById(inputElement);
+    const preview = document.getElementById(previewContainer);
+    const cropperContainerElement = document.getElementById(cropperContainer);
+    const cropButton = document.getElementById(cropButtonId);
+    let cropper;
+
+    input.addEventListener("change", function (e) {
+        const file = e.target.files[0];
+        if (file && file.type.startsWith("image/") && file.size <= 5 * 1024 * 1024) {
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                // Clear previous previews
+                preview.innerHTML = "";
+
+                const imgElement = document.createElement("img");
+                imgElement.src = event.target.result;
+                preview.appendChild(imgElement); // Show the selected image
+
+                // Initialize Cropper.js with better settings
+                cropperContainerElement.style.display = "block"; // Show the cropper container
+                cropper = new Cropper(imgElement, {
+                    aspectRatio: 1, // Adjust aspect ratio (1:1 for square images)
+                    viewMode: 1, // Controls the view mode
+                    responsive: true,
+                    minCropBoxWidth: 100, // Minimum crop box width
+                    minCropBoxHeight: 100, // Minimum crop box height
+                    zoomable: true, // Allow zooming in/out
+                    cropBoxResizable: true, // Allow resizing the crop box
+                    autoCropArea: 0.8, // Adjust the auto crop area
+                    ready: function () {
+                        var cropper = this.cropper;
+                        var imageData = cropper.getImageData();
+                        cropper.zoomTo(0.5); // Set zoom level
+                    }
+                });
+
+                cropButton.classList.remove("hidden"); // Show the crop button
+            };
+            reader.readAsDataURL(file);
+        } else {
+            alert("Please upload a valid image (JPEG, PNG, or JPG) with a size less than 5MB.");
+        }
+    });
+
+    // Handle crop button click
+    cropButton.addEventListener("click", function () {
+        const croppedCanvas = cropper.getCroppedCanvas({
+            imageSmoothingEnabled: true, // Ensure smooth cropping
+            imageSmoothingQuality: "high", // High quality smoothing
+        });
+
+        const croppedImage = croppedCanvas.toDataURL("image/jpeg", 1.0); // Save with high quality
+
+        // Clear preview and cropper container, then show cropped image
+        preview.innerHTML = "";
+        const croppedImgElement = document.createElement("img");
+        croppedImgElement.src = croppedImage;
+        preview.appendChild(croppedImgElement);
+        cropperContainerElement.style.display = "none"; // Hide cropper after cropping
+
+        // Add the cropped image to the hidden form field
+        const imageFieldElement = document.getElementById(imageField);
+        imageFieldElement.value = croppedImage; // Set the base64 image data to the hidden input field
+    });
+}
+
+// Initialize image handling for each image input
+handleImageUpload('mainImage', 'mainImagePreview', 'mainImageCropper', 'mainImageCropButton', 'mainImageData');
+handleImageUpload('firstImage', 'firstImagePreview', 'firstImageCropper', 'firstImageCropButton', 'firstImageData');
+handleImageUpload('secondImage', 'secondImagePreview', 'secondImageCropper', 'secondImageCropButton', 'secondImageData');
+handleImageUpload('thirdImage', 'thirdImagePreview', 'thirdImageCropper', 'thirdImageCropButton', 'thirdImageData');
+</script>
+
+</body>
+</html>

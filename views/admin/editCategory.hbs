@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update Category</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="bg-gray-100 py-12">
 
@@ -14,20 +15,20 @@
       <!-- Category Name Field -->
       <div class="mb-6">
         <label for="name" class="block text-gray-700 font-semibold mb-2 text-lg">Category Name:</label>
-        <input type="text" id="name" name="name" value="{{category.name}}" required class="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-400" />
+        <input type="text" id="name" name="name" value="{{category.name}}" class="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-400" />
       </div>
 
       <!-- Category Image Upload -->
       <div class="mb-6">
         <label for="image" class="block text-gray-700 font-semibold mb-2 text-lg">Category Image:</label>
-        <input type="file" id="image" name="image" class="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-400" />
+        <input type="file" id="image" name="image" class="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-400" onchange="previewImage(event)" />
       </div>
 
       <!-- Display Current Image -->
       {{#if category.image}}
         <div class="mb-6">
           <label class="block text-gray-700 font-semibold mb-2 text-lg">Current Image:</label>
-          <img src="/uploads/{{category.image}}" alt="Category Image" class="w-64 h-64 object-cover rounded-xl shadow-lg mx-auto" />
+          <img id="categoryImagePreview" src="/uploads/{{category.image}}" alt="Category Image" class="w-64 h-64 object-cover rounded-xl shadow-lg mx-auto" />
         </div>
       {{/if}}
 
@@ -36,6 +37,88 @@
         <button type="submit" class="w-full bg-yellow-500 text-white px-6 py-3 rounded-xl hover:bg-yellow-600 transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-yellow-400">Update Category</button>
       </div>
    </form>
+
+   <script>
+      // Function to preview image before uploading
+      function previewImage(event) {
+        const file = event.target.files[0]; // Get the selected file
+        const reader = new FileReader(); // Create a file reader
+
+        reader.onload = function(e) {
+          const previewImage = document.getElementById('categoryImagePreview');
+          previewImage.src = e.target.result; // Set the new image as the source of the preview
+        };
+
+        if (file) {
+          reader.readAsDataURL(file); // Read the file as data URL to display as an image
+        }
+      }
+
+      // Form submission handling with validation and AJAX
+      document.querySelector('form').addEventListener('submit', async function (event) {
+  event.preventDefault(); // Prevent default form submission
+
+  let categoryName = document.querySelector('input[name="name"]').value.trim();
+
+  // Normalize spaces (convert multiple spaces into a single space)
+  categoryName = categoryName.replace(/\s+/g, ' ');
+
+  // Check if the category name is empty or contains lowercase letters
+  if (categoryName === '') {
+    Swal.fire({
+      icon: 'error',
+      title: 'Invalid Name',
+      text: 'Category name cannot be empty or just spaces!',
+    });
+    return;
+  }
+
+  if (!/^[A-Z\s]+$/.test(categoryName)) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Invalid Name',
+      text: 'Category name must contain only uppercase letters.',
+    });
+    return;
+  }
+
+  const formData = new FormData(this);
+  formData.set('name', categoryName); // Update the form data with the normalized name
+
+  try {
+    const response = await fetch('/admin/categories/edit/{{category._id}}', {
+      method: 'POST',
+      body: formData,
+    });
+
+    const result = await response.json(); // Parse the JSON response
+
+    if (response.status === 200) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: 'Category updated successfully!',
+        confirmButtonColor: '#3085d6',
+      }).then(() => {
+        window.location.href = '/admin/categories';
+      });
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: result.message,
+      });
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Server Error',
+      text: 'Something went wrong. Please try again later.',
+    });
+  }
+});
+   </script>
 
 </body>
 </html>
