@@ -37,6 +37,17 @@
                <a href="/admin/addProduct" class="inline-block bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition">Add Product</a>
 
             </div>
+            <form action="/admin/product" method="GET" class="flex items-center">
+               <input type="text" name="search" id="searchInput" placeholder="Search products..." 
+              class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value="{{searchQuery}}">
+               <button type="submit" class="ml-2 bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition">
+                 Search
+                 </button>
+            </form>
+            
+
+
 
             <!-- Show Added Products -->
             <h2 class="text-2xl font-semibold mb-6 text-gray-800">Product List</h2>
@@ -80,4 +91,11 @@
         </div>
     </div>
 </body>
+<script>
+     document.getElementById('searchInput').addEventListener('input', function() {
+        if (this.value === '') {
+            window.location.href = '/admin/product'; // Reload page when input is cleared
+        }
+    });
+</script>
 </html>

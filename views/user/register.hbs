@@ -26,6 +26,7 @@
       {{/if}}
       
       <form action="/user/register" method="POST" onsubmit="return formValidate()">
+      <input type="hidden" id="redirect" name="redirect" value="">
         
         <!-- Full Name Field -->
         <div class="mb-4">
@@ -67,6 +68,7 @@
               onclick="togglePassword('reg-confirm-password', 'toggle-confirm-password')">
           </div>
         </div>
+        
         
         <!-- Submit Button -->
         <button type="submit" class="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">Register</button>
@@ -161,6 +163,9 @@
     document.querySelectorAll("#reg-full-name, #reg-mobile, #reg-email, #reg-password, #reg-confirm-password").forEach(input => {
       input.addEventListener("input", clearError);
     });
+
+        // Capture current URL before submitting
+    document.getElementById("redirect").value = window.location.href;
   </script>
 </body>
 </html>

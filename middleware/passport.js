@@ -1,37 +1,50 @@
 const passport = require("passport");
-const { Strategy: GoogleStrategy } = require("passport-google-oauth20");
-const dotenv = require("dotenv");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const User = require('../models/userModel');  // Adjust the path to your User model
 
-dotenv.config(); // Load environment variables
+passport.use(new GoogleStrategy(
+  {
+    clientID: "90027017610-tken3km8bsrvrca79g91splhti0emakt.apps.googleusercontent.com",
+    clientSecret: "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",
 
-// Configure Passport with Google Strategy
-passport.use(
-  new GoogleStrategy(
-    {
-      clientID: "1083584210338-33btbpm63moankang4cf28jdgbena352.apps.googleusercontent.com",
-      clientSecret:"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",
-      callbackURL: "http://localhost:4000/auth/google/callback",
-    },
-    async (accessToken, refreshToken, profile, done) => {
-      try {
-        // Here you can save user data to the database if needed
-        console.log("Google profile:", profile);
-        return done(null, profile); // Pass the profile to serializeUser
-      } catch (err) {
-        return done(err, null);
+    callbackURL: "http://localhost:4000/auth/google/callback",
+    scope: ["profile", "email"],
+  },
+  async (accessToken, refreshToken, profile, done) => {
+    try {
+      let user = await User.findOne({ googleId: profile.id });
+
+      if (!user) {
+        // Create a new user if they don't exist
+        user = new User({
+          fullName: profile.displayName,
+          email: profile.emails[0].value,
+          googleId: profile.id,
+          mobile: "", // No mobile provided by Google
+          password: "" // No password needed for Google sign-in
+        });
+        await user.save(); // Save the user in the database
       }
+
+      // Proceed with the authentication flow
+      return done(null, user);
+    } catch (err) {
+      return done(err, null);
     }
-  )
-);
+  }
+));
 
-// Serialize user into session
-passport.serializeUser((user, done) => {
-  done(null, user);
-});
+// Serialize the user id to store it in the session
+passport.serializeUser((user, done) => done(null, user.id));
 
-// Deserialize user from session
-passport.deserializeUser((user, done) => {
-  done(null, user);
+// Deserialize the user to get the full user object
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await User.findById(id);
+    done(null, user);
+  } catch (err) {
+    done(err, null);  // Handle any error while retrieving user from DB
+  }
 });
 
 module.exports = passport;

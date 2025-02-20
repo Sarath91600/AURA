@@ -1,6 +1,7 @@
 
   <title>AURA PERFUMES | Discover Your Signature Scent</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
     /* Fix the navbar at the top */
     nav {
@@ -68,11 +69,38 @@
         <a href="/user/home" class="hover:text-gray-700">Home</a>
         <a href="#" class="hover:text-gray-700">About</a>
         <a href="#" class="hover:text-gray-700">Contact</a>
-        <a href="/user/logout" class="hover:text-gray-700">Logout</a>
       </div>
 
       <!-- Icons Section -->
       <div class="flex space-x-4 items-center">
+        <script>
+  // Check if the URL contains the query parameter loggedOut=true
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.has('loggedOut') && urlParams.get('loggedOut') === 'true') {
+    // Show a small toast notification instead of a full alert
+    Swal.fire({
+      toast: true,
+      position: 'top-end', // You can change it to 'bottom-end', 'top-start', etc.
+      icon: 'success',
+      title: 'Logged Out',
+      text: 'You have successfully logged out.',
+      showConfirmButton: false,
+      timer: 3000, // Auto-close after 3 seconds
+      timerProgressBar: true
+    });
+
+    // Optionally, clear the query parameter from the URL to prevent re-triggering on refresh
+    history.replaceState(null, null, window.location.pathname);
+  }
+</script>
+
+        
+
+        <!-- Welcome Message -->
+        {{#if user}} <!-- Check if user is logged in -->
+          <span class="text-sm font-medium">Welcome, {{user.fullName}}!</span>
+        {{/if}}
+
         <div class="relative">
           <!-- Profile Icon Button -->
           <a href="#" id="profile-button" class="hover:opacity-80">
@@ -80,14 +108,32 @@
           </a>
 
           <!-- Dropdown Menu -->
-          <div 
-            id="profile-dropdown" 
-            class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg hidden"
-          >
-            <a href="/user/login" class="block px-4 py-2 text-black hover:bg-gray-100">Sign In</a>
-            <a href="#" class="block px-4 py-2 text-black hover:bg-gray-100">View Profile</a>
+          <div id="profile-dropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg hidden">
+            {{#if user}}
+              <!-- Show these links when the user is logged in -->
+              <a href="/user/profile" class="block px-4 py-2 text-black hover:bg-gray-100">View Profile</a>
+              <a href="/user/logout" class="block px-4 py-2 text-black hover:bg-gray-100">Logout</a>
+            {{else}}
+              <!-- Show Sign In link when the user is not logged in -->
+              {{!-- <a href="/user/login" class="block px-4 py-2 text-black hover:bg-gray-100">Sign In</a> --}}
+              <a id="login-link" href="/user/login?redirect={{req.originalUrl}}" class="block px-4 py-2 text-black hover:bg-gray-100">
+               Sign In
+                  </a>
+
+
+
+            {{/if}}
           </div>
         </div>
+
+        <script>
+          // Show/hide the dropdown menu
+          document.getElementById('profile-button').addEventListener('click', function () {
+            const dropdown = document.getElementById('profile-dropdown');
+            dropdown.classList.toggle('hidden');
+          });
+        </script>
+
         <a href="#" class="hover:opacity-80">
           <img src="/images/cart_17658761.png" alt="Cart" class="h-8 w-8">
         </a>
@@ -110,7 +156,7 @@
         {{!-- Skip deleted product --}}
       {{else}}
         <div class="border p-4 rounded-lg shadow-md">
-          <a href="/product/{{this._id}}">
+          <a href="/user/product/{{this._id}}">
             <img src="{{this.mainImage}}" alt="{{this.name}}" class="w-48 h-48 object-cover rounded-lg mb-4 mx-auto" />
           </a>
           <h3 class="text-lg font-semibold">{{this.name}}</h3>
@@ -121,7 +167,7 @@
             Offer Price: 
             <strong class="text-green-500">₹{{calculateOfferPrice this.price this.discount}}</strong>
           </p>
-          <a href="/product/{{this._id}}" class="inline-block bg-blue-500 text-white py-2 px-4 rounded-lg mt-4 hover:bg-blue-600">View Details</a>
+          <a href="/user/product/{{this._id}}" class="inline-block bg-blue-500 text-white py-2 px-4 rounded-lg mt-4 hover:bg-blue-600">View Details</a>
         </div>
       {{/if}}
     {{/each}}
@@ -136,19 +182,20 @@
 </section>
 
   <!-- Footer -->
-  <footer class="bg-black text-white py-8">
-    <div class="container mx-auto text-center">
-      <h4 class="text-xl font-bold mb-4">AURA PERFUMES</h4>
-      <p class="text-sm mb-4">
-        "AURA: More than just fragrance, it's an experience. Indulge in our luxurious collection of perfumes, athar oils, and diffusers, each designed to elevate your mood and awaken your senses. Find your signature scent and let it radiate your aura."
-      </p>
-      <div class="space-y-2">
-        <p><strong>Customer Service:</strong> <a href="#" class="underline hover:text-gray-400">FAQs</a> | <a href="#" class="underline hover:text-gray-400">Shipping & Returns</a></p>
-        <p><strong>Contact Us:</strong> <a href="#" class="underline hover:text-gray-400">Email</a> | <a href="#" class="underline hover:text-gray-400">Phone</a></p>
-        <p>&copy; 2024 AURA. All rights reserved.</p>
-      </div>
+<footer class="bg-black text-white py-4">
+  <div class="container mx-auto text-center">
+    <h4 class="text-lg font-semibold mb-2">AURA PERFUMES</h4>
+    <p class="text-xs mb-2">
+      "AURA: More than just fragrance, it's an experience. Find your signature scent and let it radiate your aura."
+    </p>
+    <div class="text-xs">
+      <p><strong>Customer Service:</strong> <a href="#" class="underline hover:text-gray-400">FAQs</a> | <a href="#" class="underline hover:text-gray-400">Shipping & Returns</a></p>
+      <p><strong>Contact Us:</strong> <a href="#" class="underline hover:text-gray-400">Email</a> | <a href="#" class="underline hover:text-gray-400">Phone</a></p>
+      <p>&copy; 2024 AURA. All rights reserved.</p>
     </div>
-  </footer>
+  </div>
+</footer>
+
 
   <script>
     // Mobile Menu Toggle
@@ -174,6 +221,21 @@
         profileDropdown.classList.add('hidden');
       }
     });
+
+       // Show/hide the dropdown menu
+  document.getElementById('profile-button').addEventListener('click', function () {
+    const dropdown = document.getElementById('profile-dropdown');
+    dropdown.classList.toggle('hidden');
+  });
+
+
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const loginLink = document.getElementById("login-link");
+    if (loginLink) {
+      loginLink.href = `/user/login?redirect=${encodeURIComponent(window.location.pathname)}`;
+    }
+  });
   </script>
 </body>
 

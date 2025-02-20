@@ -7,5 +7,18 @@
 </head>
 <body>
     {{body}}
+
+    <script>
+  document.getElementById('login-link').addEventListener('click', function (event) {
+    event.preventDefault(); // Prevent default navigation
+
+    // Get the current page URL
+    const currentPage = window.location.pathname + window.location.search;
+
+    // Redirect to login with the current page as a query parameter
+    window.location.href = `/user/login?redirect=${encodeURIComponent(currentPage)}`;
+  });
+</script>
+
 </body>
 </html>

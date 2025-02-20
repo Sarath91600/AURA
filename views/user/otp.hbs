@@ -15,10 +15,12 @@
         <div id="error-message" class="text-red-500 text-sm mb-4">{{error}}</div>
 
         <form action="/user/otp" method="POST">
+        <input type="hidden" name="redirect" value="{{redirect}}">
             <div class="mb-4">
                 <label for="otp" class="block text-gray-700 font-medium mb-2">Enter OTP</label>
                 <input type="text" id="otp" name="otp" placeholder="Enter OTP" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
             </div>
+           
 
             <button type="submit" class="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">Verify OTP</button>
         </form>

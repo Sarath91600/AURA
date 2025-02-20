@@ -1,6 +1,6 @@
 // middlewear/auth.js
 
-const checkSesssion = (req, res, next) => {
+const checkSession = (req, res, next) => {
     if (req.session.user) {
         next(); // Allow the user to proceed if they are logged in
     } else {
@@ -9,7 +9,7 @@ const checkSesssion = (req, res, next) => {
         res.setHeader("Pragma", "no-cache");
         res.setHeader("Expires", "0");
 
-        res.redirect("login"); // Redirect to login page if the user is not logged in
+        res.redirect("/user/home"); // Redirect to login page if the user is not logged in
     }
 };
 
@@ -21,4 +21,4 @@ const isLogin = (req, res, next) => {
     }
     next(); // Allow the request to proceed to the next middleware if not logged in
 };
-module.exports = { isLogin,checkSesssion };
+module.exports = { isLogin,checkSession };

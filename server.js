@@ -3,7 +3,14 @@ const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
 const hbs = require('hbs');
+
+const passport = require('./middleware/passport');
 const session = require('express-session');
+
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
+
+
+
 
 
 const dotenv = require("dotenv")
@@ -11,7 +18,7 @@ const nocache=require("nocache")
 const app = express();
 app.use(nocache())
 
-const passport = require('./middleware/passport')
+
 
 
 
@@ -50,11 +57,15 @@ app.use(session({
     }
 }))
 
-
-
-// Initialize Passport
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Use routes
+app.use('/user', userRoutes);
+app.use('/admin', adminRoutes);
+//app.use('/', userRoutes);
+
+
 
 
 
@@ -63,6 +74,9 @@ app.use(passport.session());
 hbs.registerHelper('eq', function (a, b) {
     return a === b;
 });
+
+
+  
 
 // View engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -81,10 +95,7 @@ hbs.registerHelper('ifEquals', function(arg1, arg2, options) {
   return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
 });
 
-// Use routes
-app.use('/user', userRoutes);
-app.use('/admin', adminRoutes);
-app.use('/', userRoutes);
+
 
 
 // Start server

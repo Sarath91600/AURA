@@ -6,23 +6,22 @@ const Category = require('../models/category');
 /// Fetch products with isDeleted: false
 const getProducts = async (req, res) => {
     try {
-        // Fetch products with isDeleted: false and populate the category field
-        const products = await Product.find({ isDeleted: false }).populate('category');
+        let query = { isDeleted: false };
+        
+        if (req.query.search) {
+            query.name = { $regex: req.query.search, $options: "i" }; // Case-insensitive search
+        }
 
-        // Fetch active categories
+        const products = await Product.find(query).populate('category');
         const categories = await Category.find({ deleted: false });
 
-        // Log products and categories for debugging
-        console.log('Products:', products);
-        console.log('Categories:', categories);
-
-        // Render the page with the filtered products and categories
-        res.render('admin/product', { products, categories });
+        res.render('admin/product', { products, categories, searchQuery: req.query.search || '' });
     } catch (err) {
         console.error('Error fetching products:', err);
         res.status(500).send('Server error');
     }
 };
+
 
 
 
