@@ -199,29 +199,45 @@
   
 
   <!-- Breadcrumbs (Moved Below Navbar) -->
-<section class="breadcrumb mb-6 pt-16 px-4">
+  <section class="breadcrumb mb-6 pt-16 px-4">
   <a href="/user/home" class="text-blue-500 hover:underline">Home</a> /
   <a href="/user/category/{{product.category.name}}" class="text-blue-500 hover:underline">{{product.category.name}}</a> /
   <span class="text-gray-500">{{product.name}}</span>
-</section>
+  </section>
 
 <!-- Product Detail Section -->
-<section class="product-detail px-4 lg:px-24 py-10">
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
-    <!-- Product Image and Information -->
-    <div class="product-image">
-      <img src="{{product.mainImage}}" alt="{{product.name}}" class="image-zoom w-72 h-72 object-cover rounded-lg shadow-lg mb-6" />
-      <!-- Additional Product Images -->
-      <div class="product-thumbnails flex space-x-4 mt-4">
-        <img src="{{product.firstImage}}" alt="First Image" onclick="document.querySelector('.product-image img').src='{{product.firstImage}}'" class="w-20 h-20 object-cover rounded-lg cursor-pointer shadow-md hover:scale-105 transition-transform duration-200" />
-        <img src="{{product.secondImage}}" alt="Second Image" onclick="document.querySelector('.product-image img').src='{{product.secondImage}}'" class="w-20 h-20 object-cover rounded-lg cursor-pointer shadow-md hover:scale-105 transition-transform duration-200" />
-        <img src="{{product.thirdImage}}" alt="Third Image" onclick="document.querySelector('.product-image img').src='{{product.thirdImage}}'" class="w-20 h-20 object-cover rounded-lg cursor-pointer shadow-md hover:scale-105 transition-transform duration-200" />
+  <section class="product-detail px-4 lg:px-24 py-10 mt-1">  
+   <div class="flex flex-col lg:flex-row gap-10">
+    <!-- Left Section: Product Images -->
+     <div class="flex gap-5 items-start">
+      <!-- Thumbnail Images (Side Grid) -->
+      <div class="grid grid-cols-1 gap-3">
+        <img src="{{product.firstImage}}" alt="Thumbnail 1"
+          onclick="document.getElementById('main-product-image').src='{{product.firstImage}}'"
+          class="w-20 h-20 object-cover rounded-md cursor-pointer shadow-md border-2 border-gray-200 hover:border-black transition-all duration-200">
+        
+        <img src="{{product.secondImage}}" alt="Thumbnail 2"
+          onclick="document.getElementById('main-product-image').src='{{product.secondImage}}'"
+          class="w-20 h-20 object-cover rounded-md cursor-pointer shadow-md border-2 border-gray-200 hover:border-black transition-all duration-200">
+        
+        <img src="{{product.thirdImage}}" alt="Thumbnail 3"
+          onclick="document.getElementById('main-product-image').src='{{product.thirdImage}}'"
+          class="w-20 h-20 object-cover rounded-md cursor-pointer shadow-md border-2 border-gray-200 hover:border-black transition-all duration-200">
+          
+          <img src="{{product.mainImage}}" alt="Thumbnail 2"
+          onclick="document.getElementById('main-product-image').src='{{product.mainImage}}'"
+          class="w-20 h-20 object-cover rounded-md cursor-pointer shadow-md border-2 border-gray-200 hover:border-black transition-all duration-200">
+      </div>
+
+      <!-- Main Product Image -->
+      <div class="w-full">
+        <img id="main-product-image" src="{{product.mainImage}}" alt="{{product.name}}"
+          class="w-[450px] h-[450px] object-cover rounded-lg shadow-lg border border-gray-300">
       </div>
     </div>
 
-    <!-- Product Information -->
-    
-    <div class="product-info">
+    <!-- Right Section: Product Information -->
+    <div class="product-info lg:w-1/2">
       <h1 class="text-3xl font-bold text-gray-800 mb-4">{{product.name}}</h1>
       <p class="text-gray-500 mb-6">{{product.description}}</p>
 
@@ -234,23 +250,21 @@
         <p class="text-3xl text-green-600 font-bold">
           Offer Price: ₹{{calculateOfferPrice product.price product.discount}}
         </p>
-       <p class="text-green-600 font-medium">(Inclusive of all taxes)</p>
+        <p class="text-green-600 font-medium">(Inclusive of all taxes)</p>
       </div>
-    
+
       <!-- Stock Availability -->
       <div class="stock-status mb-6">
-         {{#ifEquals product.stock 0}}
+        {{#ifEquals product.stock 0}}
           <p class="text-red-500">Sorry, out of stock</p>
-          {{else if product.isSoldOut}}
+        {{else if product.isSoldOut}}
           <p class="text-red-500">Sold Out</p>
-          {{else if product.isUnavailable}}
-         <p class="text-red-500">Unavailable</p>
- 
-   
-         {{/ifEquals}}
-</div>
+        {{else if product.isUnavailable}}
+          <p class="text-red-500">Unavailable</p>
+        {{/ifEquals}}
+      </div>
+
       <!-- Product Highlights or Specifications -->
-      
       <div class="product-specs mb-6">
         <h3 class="text-xl font-semibold text-gray-800 mb-4">🔹 Highlights</h3>
         <ul class="list-disc pl-6 text-gray-600">
@@ -268,22 +282,22 @@
   </div>
 </section>
 
+
 {{!-- Related Product Section --}}
 <section class="related-products mt-10 px-4 lg:px-24">
   <h2 class="text-2xl font-semibold text-gray-800 mb-6">Related Products</h2>
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
     {{#each relatedProducts}}
-      <div class="border p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 w-48 h-auto flex flex-col">
+      <div class="border p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 w-50 flex flex-col h-full">
         <!-- Wrapper to center content -->
         <div class="flex flex-col h-full justify-between">
-          <!-- Smaller Image Size -->
-          <a href="/user/product/{{this._id}}"><img src="{{this.mainImage}}" alt="{{this.name}}" class="w-32 h-32 object-cover rounded-lg mb-4 transition-transform duration-200 hover:scale-105" /></a>
-              
-            
-          
+          <!-- Adjusted Image Size -->
+          <a href="/user/product/{{this._id}}">
+            <img src="{{this.mainImage}}" alt="{{this.name}}" class="w-40 h-40 object-cover rounded-lg mb-4 transition-transform duration-200 hover:scale-105" />
+          </a>
           
           <!-- Text content and button -->
-          <div class="flex flex-col items-center">
+          <div class="flex flex-col items-center flex-grow">
             <h3 class="text-lg font-semibold text-gray-800 mb-2 text-center">{{this.name}}</h3>
             <p class="text-sm text-gray-500 mb-2 text-center">
               Price: 
@@ -301,6 +315,7 @@
     {{/each}}
   </div>
 </section>
+
 
 
 

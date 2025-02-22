@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Verify OTP</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex items-center justify-center h-screen bg-gradient-to-r from-blue-500 to-purple-600">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-96">
+        <h2 class="text-2xl font-bold text-center mb-4 text-gray-700">Enter OTP</h2>
+        
+        <!-- Server-side Error Message -->
+        {{#if error}}
+        <p class="text-red-500 text-center" id="errorMessage">{{error}}</p>
+        {{/if}}
+
+        <form action="/user/verify-otp" method="POST" class="space-y-4">
+            <label class="block text-gray-600">Enter OTP:</label>
+            <input type="text" name="otp" id="otpInput" required 
+                class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300">
+
+            <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition">Verify OTP</button>
+        </form>
+    </div>
+
+    <script>
+        const otpInput = document.getElementById("otpInput");
+        const errorMessage = document.getElementById("errorMessage");
+
+        // Hide error message when the user starts typing
+        otpInput.addEventListener("input", function() {
+            if (errorMessage) {
+                errorMessage.classList.add("hidden");
+            }
+        });
+    </script>
+</body>
+</html>

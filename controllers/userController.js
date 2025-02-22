@@ -107,8 +107,7 @@ const registerUser = async (req, res) => {
         req.session.userDetails = { fullName, mobile, email, password: hashedPassword };
         req.session.otp = otp;
 
-        console.log("🔹 Captured Redirect URL:", redirectUrl);
-        console.log("🔹 Stored in Session:", req.session.redirect);
+        
 
         const transporter = nodemailer.createTransport({
             service: 'gmail',
@@ -232,6 +231,91 @@ const verifyOtp = async (req, res) => {
 };
 
 
+
+// Step 1: Send OTP for Password Reset
+const sendResetOtp = async (req, res) => {
+    const { email } = req.body;
+
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.render("user/forgotPassword", { error: "Email not found." });
+        }
+
+        const otp = Math.floor(1000 + Math.random() * 9000);
+        req.session.resetOtp = otp;
+        req.session.resetEmail = email;
+
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: { user: "sarath91600@gmail.com", pass: "vavo cqra matf covp" },
+        });
+
+        const mailOptions = {
+            from: "sarath91600@gmail.com",
+            to: email,
+            subject: "Password Reset OTP - Aura Perfumes",
+            text: `Your OTP for password reset is: ${otp}`,
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.log("Error sending email:", error);
+                return res.render("user/forgotPassword", { error: "Failed to send OTP. Please try again." });
+            } else {
+                console.log("Reset OTP sent:", req.session.resetOtp);
+                res.redirect("/user/reset-otp");
+            }
+        });
+    } catch (error) {
+        console.error("Error sending reset OTP:", error);
+        res.render("user/forgotPassword", { error: "Something went wrong. Please try again later." });
+    }
+};
+
+
+
+// Step 2: Verify OTP
+const verifyResetOtp = async (req, res) => {
+    const { otp } = req.body;
+
+    if (otp === req.session.resetOtp?.toString()) {
+        console.log("Reset OTP verified successfully!");
+        req.session.resetOtpVerified = true;
+        res.redirect("/user/updatePassword");
+    } else {
+        console.log("Invalid OTP entered.");
+        res.render("user/otpVerification", { error: "Invalid OTP. Please try again." });
+    }
+};
+
+// Step 3: Set New Password
+const setNewPassword = async (req, res) => {
+    if (!req.session.resetOtpVerified) {
+        return res.redirect("/user/forgot-password");
+    }
+
+    const { password } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    try {
+        await User.findOneAndUpdate(
+            { email: req.session.resetEmail },
+            { password: hashedPassword }
+        );
+
+        console.log("Password updated successfully!");
+
+        req.session.resetOtp = null;
+        req.session.resetEmail = null;
+        req.session.resetOtpVerified = null;
+
+        res.redirect("/user/login");
+    } catch (error) {
+        console.error("Error updating password:", error);
+        res.render("user/newPassword", { error: "Failed to update password. Please try again." });
+    }
+};
 
 const login = async (req, res) => {
     try {
@@ -442,5 +526,8 @@ const getNewCollections = async (req, res) => {
 };
 
 
-module.exports = { registerUser, getOtpPage, verifyOtp, loadHome, login, getLoginPage, resendOtp,getCategoriesForUser,logout,getCategoryProducts,getProductDetail,getNewCollections };
+module.exports = { registerUser, getOtpPage, verifyOtp, loadHome, login, getLoginPage, resendOtp,getCategoriesForUser,logout,getCategoryProducts,getProductDetail,getNewCollections,      sendResetOtp,
+
+    verifyResetOtp,
+    setNewPassword, };
     
